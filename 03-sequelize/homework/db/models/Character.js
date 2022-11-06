@@ -8,14 +8,28 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(5),
         primaryKey: true,
         allowNull: false,
+        validate: {
+          isNotHenry(value) {
+            if (value.toLowerCase() === "henry") {
+              throw new Error("is henry");
+            }
+          },
+        },
       },
       name: {
         type: DataTypes.STRING,
         unique: true,
         allowNull: false,
+        validate: {
+          notIn: [["Henry", "SoyHenry", "Soy Henry"]],
+        },
       },
       age: {
         type: DataTypes.INTEGER,
+        get() {
+          const value = this.getDataValue("age");
+          return value ? value + " years old" : null;
+        },
       },
       race: {
         type: DataTypes.ENUM(
